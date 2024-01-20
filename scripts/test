@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Activate virtual environment
+activate_python_venv () {
+    if [ -f ./venv/bin/activate ]; then
+        # shellcheck disable=SC1091
+        source ./venv/bin/activate
+    fi
+}
+
+# Lint terraform files
+run_tflint () {
+    activate_python_venv
+    tflint --chdir=. --var-file=variables.tf
+}
+
+# Lint ansible files
+run_ansible_lint () {
+    activate_python_venv
+    ansible-lint -p --project-dir .
+}
+
+# Run everything
+run_all () {
+    echo "--- Ansible linting ---"
+    run_ansible_lint
+    echo "--- Terraform linting ---"
+    run_tflint
+}
+
+while getopts ":t :a :w" flag
+do
+    case "${flag}" in
+        t) run_tflint;;
+        a) run_ansible_lint;;
+        w) run_all;;
+        *) exit 1;;
+    esac
+done
