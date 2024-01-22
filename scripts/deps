@@ -43,6 +43,11 @@ if ! terraform > /dev/null 2>&1; then
     apt-get install terraform > /dev/null 2>&1
 fi
 
+# Install shellcheck
+if ! shellcheck > /dev/null 2>&1; then
+    echo -e "\e[1A\e[KInstalling shellcheck..."
+    apt-get install shellcheck > /dev/null 2>&1
+
 # Mark as held back to prevent updates for compatibility
 # Use `apt-mark unhold terraform` to undo this
 apt-mark hold terraform > /dev/null 2>&1
