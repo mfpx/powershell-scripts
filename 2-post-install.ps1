@@ -13,6 +13,7 @@ Write-Host "Checking WSL internet connectivity, please wait..."
 (wsl nc -vz gov.uk 443 -w 5) *> $null
 if ($LASTEXITCODE -ne 0) {
     Write-Host "No internet connectivity, will attempt a fix..."
+    # Check if there is an existing wslconfig
     if (Test-Path "$($env:USERPROFILE)\.wslconfig" -PathType Leaf) {
         $confirmation = Read-Host "Are you happy to have your .wslconfig modified? (y/n)"
         if ($confirmation -eq 'y') {

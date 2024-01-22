@@ -19,7 +19,12 @@ if ($isWin11) {
 
     # Install Ubuntu
     wsl --install -d Ubuntu
+
 } elseif (!($isWin11)) {
+    # Notify of potential issues
+    Write-Host "Forewarning that WSL on Windows 10 might experience issues" -ForegroundColor red
+    pause
+
     # Install WSL components
     wsl --install --no-distribution --web-download
 
