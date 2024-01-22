@@ -47,6 +47,7 @@ fi
 if ! shellcheck > /dev/null 2>&1; then
     echo -e "\e[1A\e[KInstalling shellcheck..."
     apt-get install shellcheck > /dev/null 2>&1
+fi
 
 # Mark as held back to prevent updates for compatibility
 # Use `apt-mark unhold terraform` to undo this
@@ -80,24 +81,24 @@ apt-get install python3-venv --assume-yes > /dev/null 2>&1
 
 # Create a venv
 echo -e "\e[1A\e[KCreating a virtual environment..."
-python3 -m venv /home/$SUDO_USER/devenv/venv > /dev/null 2>&1
+python3 -m venv /home/"$SUDO_USER"/devenv/venv > /dev/null 2>&1
 
 # Install tftui to venv
 echo -e "\e[1A\e[KInstalling tftui in the virtual environment..."
-/home/$SUDO_USER/devenv/venv/bin/pip install tftui > /dev/null 2>&1
+/home/"$SUDO_USER"/devenv/venv/bin/pip install tftui > /dev/null 2>&1
 
 # Install ansible
 echo -e "\e[1A\e[KInstalling ansible in the virtual environment..."
-/home/$SUDO_USER/devenv/venv/bin/pip install ansible > /dev/null 2>&1
+/home/"$SUDO_USER"/devenv/venv/bin/pip install ansible > /dev/null 2>&1
 
 # Install ansible-lint
 echo -e "\e[1A\e[KInstalling ansible-lint in the virtual environment..."
-/home/$SUDO_USER/devenv/venv/bin/pip install ansible-lint > /dev/null 2>&1
+/home/"$SUDO_USER"/devenv/venv/bin/pip install ansible-lint > /dev/null 2>&1
 
 # Append venv to .gitignore, create if it doesn't exist
-printf "\n# Python virtual environment\nvenv" | tee -a /home/$SUDO_USER/devenv/.gitignore > /dev/null 2>&1
+printf "\n# Python virtual environment\nvenv" | tee -a /home/"$SUDO_USER"/devenv/.gitignore > /dev/null 2>&1
 
 # Change ownership of created files to user
-chown -R "$SUDO_USER":"$SUDO_USER" /home/$SUDO_USER/devenv/venv /home/$SUDO_USER/devenv/.gitignore
+chown -R "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/devenv/venv /home/"$SUDO_USER"/devenv/.gitignore
 
 printf "\e[1A\e[KDone!\nPlease run \"source ./venv/bin/activate\" to activate the environment in the VM.\n"
