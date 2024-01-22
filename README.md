@@ -14,6 +14,17 @@ You are encouraged to agree to this, otherwise you will be unable to access the 
 Running `2-post-install.ps1` will do some maintenance on the VM, it will also install some _Terraform_ and _Ansible_ tools.  
 Once this is complete, you will have a fully working development environment.  
 
+### Full list of installed tools:
+- terraform (apt)
+- ansible (pypi)
+- tftui (pypi)
+- tf-lint (GitHub)
+- ansible-lint (pypi)
+- ShellCheck (apt)
+- unzip (apt)
+- Python pip (apt)
+- python3-venv (apt)
+
 ## Known issues/quirks
 1. **Sometimes, Ubuntu will be unable to connect to the internet.**  
 The solution to this is to add an experimental DNS tunneling option to user's `.wslconfig`.  
