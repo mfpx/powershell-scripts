@@ -20,80 +20,97 @@ printf "\033c"
 
 # Install unzip
 if ! unzip > /dev/null 2>&1; then
-    echo -e "\e[1A\e[KInstalling the \"unzip\" package from apt..."
-    apt-get update > /dev/null 2>&1 && apt-get install unzip > /dev/null 2>&1
+    echo -n "Installing the \"unzip\" package from apt... "
+    apt-get update > /dev/null 2>&1 && apt-get install unzip --assume-yes > /dev/null 2>&1
+    echo "done!"
 fi
 
 # Does the keyring signature already exist? If so, don't overwrite it.
 if ! [ -f /usr/share/keyrings/hashicorp-archive-keyring.gpg ]; then
-    echo -e "\e[1A\e[KAdding HashiCorp's key to keyring..."
+    echo -n "Adding HashiCorp's key to keyring... "
     wget https://apt.releases.hashicorp.com/gpg > /dev/null 2>&1
     gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg -i gpg
     rm gpg
+    echo "done!"
 fi
 
 # Specify path to repository signature, apt will refuse to use it otherwise
-echo -e "\e[1A\e[KSigning HashiCorp apt repository..."
+echo -n "Signing HashiCorp apt repository... "
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list > /dev/null 2>&1
+echo "done!"
 
-# Update and install Terraform
-if ! terraform > /dev/null 2>&1; then
-    echo -e "\e[1A\e[KInstalling terraform..."
-    apt-get update > /dev/null 2>&1
-    apt-get install terraform > /dev/null 2>&1
+# Check if terraform is installed; if it is and is marked as held back, do not update.
+if [[ $(apt-mark showhold | grep -w "terraform") ]]; then
+    echo "Terraform is installed and held, will not update"
+else
+    # Update and install Terraform
+    if ! terraform > /dev/null 2>&1; then
+        echo -n "Installing terraform... "
+        apt-get update > /dev/null 2>&1
+        apt-get install terraform --assume-yes > /dev/null 2>&1
+        echo "done!"
+    fi
+    # Mark as held back to prevent updates for compatibility
+    # Use `apt-mark unhold terraform` to undo this
+    apt-mark hold terraform > /dev/null 2>&1
 fi
 
 # Install shellcheck
 if ! shellcheck > /dev/null 2>&1; then
-    echo -e "\e[1A\e[KInstalling shellcheck..."
-    apt-get install shellcheck > /dev/null 2>&1
+    echo -n "Installing shellcheck... "
+    apt-get install shellcheck --assume-yes > /dev/null 2>&1
+    echo "done!"
 fi
-
-# Mark as held back to prevent updates for compatibility
-# Use `apt-mark unhold terraform` to undo this
-apt-mark hold terraform > /dev/null 2>&1
 
 if ! tflint > /dev/null 2>&1; then
     # Get latest tflint
-    echo -e "\e[1A\e[KDownloading tflint..."
+    echo -n "Downloading tflint... "
     curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest \
     | grep "browser_download_url.*tflint_linux_amd64.zip" \
     | cut -d : -f 2,3 \
     | tr -d \" \
     | wget -qi - > /dev/null 2>&1
+    echo "done!"
 
     # Install tflint
-    echo -e "\e[1A\e[KInstalling tflint..."
+    echo -n "Installing tflint... "
     unzip tflint_linux_amd64.zip > /dev/null 2>&1
     mv tflint /usr/bin
     unlink tflint_linux_amd64.zip
+    echo "done!"
 fi
 
 # Install pip and venv if required.
 if ! pip > /dev/null 2>&1; then
-    echo -e "\e[1A\e[KInstalling Python pip..."
+    echo -n "Installing Python pip... "
     apt-get install python3-pip --assume-yes > /dev/null 2>&1
+    echo "done!"
 fi
 
 # Install Python's venv
-echo -e "\e[1A\e[KInstalling Python venv module..."
+echo -n "Installing Python venv module... "
 apt-get install python3-venv --assume-yes > /dev/null 2>&1
+echo "done!"
 
 # Create a venv
-echo -e "\e[1A\e[KCreating a virtual environment..."
+echo -n "Creating a virtual environment... "
 python3 -m venv /home/"$SUDO_USER"/devenv/venv > /dev/null 2>&1
+echo "done!"
 
 # Install tftui to venv
-echo -e "\e[1A\e[KInstalling tftui in the virtual environment..."
+echo -n "Installing tftui in the virtual environment... "
 /home/"$SUDO_USER"/devenv/venv/bin/pip install tftui > /dev/null 2>&1
+echo "done!"
 
 # Install ansible
-echo -e "\e[1A\e[KInstalling ansible in the virtual environment..."
+echo -n "Installing ansible in the virtual environment... "
 /home/"$SUDO_USER"/devenv/venv/bin/pip install ansible > /dev/null 2>&1
+echo "done!"
 
 # Install ansible-lint
-echo -e "\e[1A\e[KInstalling ansible-lint in the virtual environment..."
+echo -n "Installing ansible-lint in the virtual environment... "
 /home/"$SUDO_USER"/devenv/venv/bin/pip install ansible-lint > /dev/null 2>&1
+echo "done!"
 
 # Append venv to .gitignore, create if it doesn't exist
 printf "\n# Python virtual environment\nvenv" | tee -a /home/"$SUDO_USER"/devenv/.gitignore > /dev/null 2>&1
@@ -101,4 +118,4 @@ printf "\n# Python virtual environment\nvenv" | tee -a /home/"$SUDO_USER"/devenv
 # Change ownership of created files to user
 chown -R "$SUDO_USER":"$SUDO_USER" /home/"$SUDO_USER"/devenv/venv /home/"$SUDO_USER"/devenv/.gitignore
 
-printf "\e[1A\e[KDone!\nPlease run \"source ./venv/bin/activate\" to activate the environment in the VM.\n"
+printf "\nDone!\nPlease run \"source ~/devenv/venv/bin/activate\" to activate the environment in the VM.\n"

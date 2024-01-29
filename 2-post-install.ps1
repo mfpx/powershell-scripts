@@ -79,9 +79,11 @@ if ($confirmation -eq 'y') {
         return
     }
 
-    # Make a development directory
-    wsl mkdir /home/$username/devenv
-
+    # Make a development directory if it doesn't exist
+    if (!(Test-Path "\\wsl$\Ubuntu\home\$username\devenv" -Type Container)) {
+        wsl mkdir /home/$username/devenv
+    }
+    
     # Copy bash scripts to Ubuntu
     wsl cp -r $wslPath /home/$username/devenv/
 

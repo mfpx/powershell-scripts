@@ -37,3 +37,13 @@ if ($isWin11) {
     # Install Ubuntu
     wsl --install -d Ubuntu --web-download
 }
+
+# Installing components from scratch will require a restart
+$confirmation = Read-Host "A restart is required, are you happy to restart now? (y/n)"
+if ($confirmation -eq 'y') {
+    # Force restart
+    Restart-Computer -Force
+} elseif ($confirmation -eq 'n') {
+    Write-Host "Please restart your machine before continuing to step 2"
+    return
+}

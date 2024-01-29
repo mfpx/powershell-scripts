@@ -41,9 +41,13 @@ If you are on _Windows 11_, you will already have _Terminal_ installed - you sho
 Now, there are **2** ways to try solving this;  
     - Authenticate as your logged in user. It must have administrative privileges to be able to execute WSL commands.  
     - Try running commands as a standard user, at which point you may be prompted for authentication and can use the other account.  
-3. **Regular download of WSL components will fail on Windows 10 when the Microsoft Store is blocked by policy**  
+4. **Regular download of WSL components will fail on Windows 10 when the Microsoft Store is blocked by policy**  
 When attempting to run a WSL command on a Windows 10 device where the Microsoft Store is blocked by policy or is
 otherwise non-operational, you will probably receive `Error: 0x8024500c`.  
 The solution is to force a web download, whereby running an install command WSL will download the required files directly
 from the server. This can be done by passing a `--web-download` argument to a command that requires downloads.  
 This has already been added to the scripts, but be aware in case issues arise in the future.
+5. **WSL has been known to cause BSODs**  
+It has been widely reported that some people have been getting BSODs (Blue Screen of Death) while running WSL.  
+The only solution so far seems to be reinstalling WSL components (i.e., `Microsoft-Windows-Subsystem-Linux` and `VirtualMachinePlatform`) and keep the system up to date.  
+If this does not help, you are better off not using WSL.
