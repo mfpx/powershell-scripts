@@ -15,19 +15,12 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "No internet connectivity, will attempt a fix..."
     # Check if there is an existing wslconfig
     if (Test-Path "$($env:USERPROFILE)\.wslconfig" -PathType Leaf) {
-        $confirmation = Read-Host "Are you happy to have your .wslconfig modified? (y/n)"
-        if ($confirmation -eq 'y') {
-            # Back up the original
-            Copy-Item "$($env:USERPROFILE)\.wslconfig" -Destination "$($env:USERPROFILE)\.wslconfig.bak"
-            # Append experimental networking options
-            Add-Content -Path "$($env:USERPROFILE)\.wslconfig" -Value "`n[experimental]`ndnsTunneling=true`nnetworkingMode=mirrored"
-            # Shutdown WSL, important for changes to take effect
-            wsl --shutdown
-        } elseif ($confirmation -eq 'n') {
-            # User said no, so just exit
-            Write-Host "No action was taken, exiting..."
-            return
-        }
+        # Back up the original
+        Copy-Item "$($env:USERPROFILE)\.wslconfig" -Destination "$($env:USERPROFILE)\.wslconfig.bak"
+        # Append experimental networking options
+        Add-Content -Path "$($env:USERPROFILE)\.wslconfig" -Value "`n[experimental]`ndnsTunneling=true`nnetworkingMode=mirrored"
+        # Shutdown WSL, important for changes to take effect
+        wsl --shutdown
     } else {
         # WSL configuration file doesn't exist, so create one
         "[experimental]`ndnsTunneling=true`nnetworkingMode=mirrored" | Out-File -Path "$($env:USERPROFILE)\.wslconfig"
