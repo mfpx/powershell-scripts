@@ -18,12 +18,12 @@ if ($LASTEXITCODE -ne 0) {
         # Back up the original
         Copy-Item "$($env:USERPROFILE)\.wslconfig" -Destination "$($env:USERPROFILE)\.wslconfig.bak"
         # Append experimental networking options
-        Add-Content -Path "$($env:USERPROFILE)\.wslconfig" -Value "`n[experimental]`ndnsTunneling=true`nnetworkingMode=mirrored"
+        Add-Content -Path "$($env:USERPROFILE)\.wslconfig" -Value "`ndnsTunneling=true`nnetworkingMode=mirrored"
         # Shutdown WSL, important for changes to take effect
         wsl --shutdown
     } else {
         # WSL configuration file doesn't exist, so create one
-        "[experimental]`ndnsTunneling=true`nnetworkingMode=mirrored" | Out-File -Path "$($env:USERPROFILE)\.wslconfig"
+        "`ndnsTunneling=true`nnetworkingMode=mirrored" | Out-File -Path "$($env:USERPROFILE)\.wslconfig"
         # Shutdown WSL, important for changes to take effect
         wsl --shutdown
     }
