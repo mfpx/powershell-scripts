@@ -23,7 +23,7 @@ if ($LASTEXITCODE -ne 0) {
         wsl --shutdown
     } else {
         # WSL configuration file doesn't exist, so create one
-        "`ndnsTunneling=true`nnetworkingMode=mirrored" | Out-File -Path "$($env:USERPROFILE)\.wslconfig"
+        "[wsl2]`ndnsTunneling=true`nnetworkingMode=mirrored" | Out-File -Path "$($env:USERPROFILE)\.wslconfig"
         # Shutdown WSL, important for changes to take effect
         wsl --shutdown
     }
